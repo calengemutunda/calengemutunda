@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gerenciador de Orçamento</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<style>
+
+* {
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #f4f6f8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  width: 350px;
+  text-align: center;
+}
+
+h1 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.input-area {
+  margin-bottom: 1.5rem;
+}
+
+input {
+  width: 100%;
+  padding: 0.8rem;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  outline: none;
+}
+
+input:focus {
+  border-color: #009879;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+button {
+  flex: 1;
+  padding: 0.8rem;
+  margin: 0 5px;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button.ganho {
+  background-color: #44ff00;
+}
+
+button.despesa {
+  background-color: #ff1900;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+.saldo {
+  background: #f9fafb;
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.lista {
+  text-align: left;
+}
+
+.lista ul {
+  list-style: none;
+  margin-top: 0.5rem;
+}
+
+.lista li {
+  padding: 0.5rem 0.8rem;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+}
+
+.lista li.ganho {
+  color: #02610d;
+}
+
+.lista li.despesa {
+  color: rgb(147, 15, 0);
+}
+
+
+
+
+</style>
+
+
+
+<body>
+
+    <p id=""></p>
+  <div class="container">
+    <h1>Despesas Pessoais</h1>
+
+    <div class="input-area">
+      <input type="number" id="meuInput" placeholder="Digite um valor..." />
+      <div class="buttons">
+        <button id="ganhoBtn" class="ganho">+ Ganho</button>
+        <button id="despesaBtn" class="despesa">- Despesa</button>
+      </div>
+    </div>
+
+    <div class="saldo">
+      <h2>Saldo atual: <span id="saldo">0</span> Kz</h2>
+    </div>
+
+    <div class="lista">
+      <h3>Histórico</h3>
+      <ul id="historico"></ul>
+    </div>
+  </div>
+
+  <script>
+
+    let saldo = 1000;
+
+    
+    document.getElementById("ganhoBtn").addEventListener("click", adicionarGanho);
+    document.getElementById("despesaBtn").addEventListener("click", adicionaDespesa);
+
+
+    function lerOsValores(valor){
+
+      valor = valor.trim();
+      valor = parseFloat(valor);
+    
+        if ( isNaN(valor) || valor <= 0){
+
+            alert("Apenas números são permitidos!!! e se o numero for negativo, basta apenas colocar ele sem o sinal negativo");
+             return null;
+        }else{
+        return parseFloat(valor.toFixed(2));
+        }
+    }
+
+
+    function adicionarGanho(){
+        
+
+        ganho = lerOsValores(document.getElementById("meuInput").value);
+
+        if(ganho != null){
+            adicionarAoHistorico(ganho, "ganho");
+            saldo += ganho;
+            
+            actualizarSaldo();
+        }
+        else{
+            alert("Valor inválido, tente novamente.");
+        }
+        
+
+        console.log("Clicou no botão de ganho");
+
+
+    }
+
+    function adicionaDespesa(){
+
+       
+
+        despesa = lerOsValores(document.getElementById("meuInput").value);
+        if(despesa != null){
+            adicionarAoHistorico(despesa, "despesa");
+            saldo -= despesa;
+
+            actualizarSaldo();
+        }else{
+            alert("Valor inválido, tente novamente");
+        }
+        
+
+    }
+
+
+
+
+    function actualizarSaldo(){
+        
+        let saldoElement = document.getElementById("saldo");
+
+        saldoElement.textContent= saldo.toFixed(2);
+
+
+
+        if(saldo > 0){
+            saldoElement.style.color = "green";
+        }else if ( saldo < 0 ){
+            saldoElement.style.color = "red";
+        }
+        else {
+            saldoElement.style.color = "black";
+        }
+        
+        
+    }
+
+
+    
+    function adicionarAoHistorico(valor, tipo){
+
+        const lista = document.getElementById("historico");
+        const item = document.createElement("li");
+
+        if (tipo === "ganho"){
+            item.classList.add("ganho");
+            item.textContent += `+ ${valor.toFixed(2)} kz`
+        }else{
+            item.classList.add("despesa")
+            item.textContent += `- ${valor.toFixed(2)} kzs`
+        } 
+
+        lista.appendChild(item)
+    }
+
+
+    actualizarSaldo();
+
+
+    
+        document.getElementById("saldo").textContent= actualizarSaldo().saldo;
+  </script>
+</body>
+</html>
